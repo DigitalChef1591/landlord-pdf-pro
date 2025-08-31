@@ -136,6 +136,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.38.4
         version: 2.56.1
+      react:
+        specifier: ^19.1.0
+        version: 19.1.0
       zod:
         specifier: ^3.22.4
         version: 3.25.76
