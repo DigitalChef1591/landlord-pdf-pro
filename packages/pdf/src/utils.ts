@@ -1,3 +1,4 @@
+import React from 'react';
 import { pdf } from '@react-pdf/renderer';
 import type { Inspection, Property, Photo, Signature } from '@landlord/core';
 import { InspectionDocument } from './InspectionDocument';
@@ -11,8 +12,8 @@ export async function generateInspectionPDF(
   photos: Photo[],
   signatures: Signature[],
   showWatermark: boolean = false
-): Promise<Buffer> {
-  const document = InspectionDocument({
+): Promise<ReadableStream<any>> {
+  const document = React.createElement(InspectionDocument, {
     inspection,
     property,
     photos,
@@ -34,7 +35,7 @@ export async function generateInspectionPDFBlob(
   signatures: Signature[],
   showWatermark: boolean = false
 ): Promise<Blob> {
-  const document = InspectionDocument({
+  const document = React.createElement(InspectionDocument, {
     inspection,
     property,
     photos,
@@ -104,7 +105,7 @@ export function generatePDFFilename(
   inspection: Inspection,
   property: Property
 ): string {
-  const date = new Date(inspection.date).toISOString().split('T')[0];
+  const date = new Date(inspection.date).toISOString().split('T')[0] || '';
   const type = inspection.type === 'move_in' ? 'MoveIn' : 'MoveOut';
   const propertyName = property.name.replace(/[^a-zA-Z0-9]/g, '_');
   

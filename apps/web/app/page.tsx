@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, FileText, Camera, Signature, Download, Shield } from 'lucide-react';
 
-export default function HomePage() {
+export default function HomePage(): JSX.Element {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
