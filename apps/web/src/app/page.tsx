@@ -19,7 +19,7 @@ export default function HomePage() {
               <Link href="/demo" className="text-gray-600 hover:text-gray-900">
                 Try Demo
               </Link>
-              <Link href="/auth/signin" className="text-gray-600 hover:text-gray-900">
+              <Link href="/auth/login" className="text-gray-600 hover:text-gray-900">
                 Sign In
               </Link>
               <Button asChild>
