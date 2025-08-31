@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Plus, Camera, FileText, Download, AlertTriangle } from 'lucide-react';
-import { SidebarBanner, InContentBanner, FooterBanner } from '@/components/ui/ad-banner';
+import { ArrowLeft, Plus, Camera, FileText, Download, AlertTriangle, Crown } from 'lucide-react';
+import { InContentBanner, FooterBanner } from '@/components/ui/ad-banner';
+
 // Temporary inline types and data until we fix the package imports
 const DEFAULT_ROOM_TEMPLATES = [
   { name: 'Kitchen', items: ['Refrigerator', 'Stove/Oven', 'Dishwasher', 'Sink', 'Cabinets', 'Countertops', 'Flooring'] },
@@ -43,8 +44,9 @@ type Inspection = {
   };
 };
 
-export default function DemoPage(): React.JSX.Element {
+export default function AppPage(): React.JSX.Element {
   const [step, setStep] = useState<'property' | 'inspection' | 'rooms' | 'export'>('property');
+  const [isPaid, setIsPaid] = useState(false); // TODO: Check actual payment status from Supabase
   const [property, setProperty] = useState<Partial<Property>>({
     name: '',
     address: ''
@@ -55,6 +57,13 @@ export default function DemoPage(): React.JSX.Element {
     notes: '',
     payload: { rooms: [] }
   });
+
+  // TODO: Check user's payment status from Supabase
+  useEffect(() => {
+    // This would check the user's entitlements from Supabase
+    // For now, we'll assume free tier
+    setIsPaid(false);
+  }, []);
 
   const handlePropertySubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -158,23 +167,41 @@ export default function DemoPage(): React.JSX.Element {
               </Link>
               <div className="flex items-center">
                 <FileText className="h-6 w-6 text-blue-600 mr-2" />
-                <h1 className="text-xl font-semibold text-gray-900">Demo Builder</h1>
-                <Badge variant="secondary" className="ml-2">Free Demo</Badge>
+                <h1 className="text-xl font-semibold text-gray-900">Landlord PDF Pro</h1>
+                {isPaid ? (
+                  <Badge className="ml-2 bg-blue-600">
+                    <Crown className="h-3 w-3 mr-1" />
+                    Pro
+                  </Badge>
+                ) : (
+                  <Badge variant="secondary" className="ml-2">Free</Badge>
+                )}
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <AlertTriangle className="h-5 w-5 text-orange-500" />
-              <span className="text-sm text-orange-600">Demo Mode - Limited Features</span>
+              {!isPaid && (
+                <>
+                  <AlertTriangle className="h-5 w-5 text-orange-500" />
+                  <span className="text-sm text-orange-600">Free Tier - Limited Features</span>
+                </>
+              )}
+              {!isPaid && (
+                <Button asChild size="sm">
+                  <Link href="/purchase">Upgrade to Pro - $29</Link>
+                </Button>
+              )}
             </div>
           </div>
         </div>
       </header>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Ad Banner - Top of Demo */}
-        <div className="mb-6">
-          <InContentBanner />
-        </div>
+        {/* Ad Banner - Only show for free tier */}
+        {!isPaid && (
+          <div className="mb-6">
+            <InContentBanner />
+          </div>
+        )}
 
         {/* Progress Steps */}
         <div className="mb-8">
@@ -387,7 +414,7 @@ export default function DemoPage(): React.JSX.Element {
                           <Button variant="outline" size="sm" className="flex items-center">
                             <Camera className="h-4 w-4 mr-1" />
                             Add Photo
-                            <Badge variant="secondary" className="ml-1">Demo</Badge>
+                            {!isPaid && <Badge variant="secondary" className="ml-1">Free: 5 max</Badge>}
                           </Button>
                         </div>
                       </div>
@@ -421,17 +448,19 @@ export default function DemoPage(): React.JSX.Element {
               <CardDescription>Your inspection report is ready</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-                <div className="flex items-center">
-                  <AlertTriangle className="h-5 w-5 text-orange-500 mr-2" />
-                  <div>
-                    <h4 className="font-medium text-orange-800">Demo Limitations</h4>
-                    <p className="text-sm text-orange-700 mt-1">
-                      This is a demo version. The exported PDF will include a watermark and be limited to 5 photos per inspection.
-                    </p>
+              {!isPaid && (
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                  <div className="flex items-center">
+                    <AlertTriangle className="h-5 w-5 text-orange-500 mr-2" />
+                    <div>
+                      <h4 className="font-medium text-orange-800">Free Tier Limitations</h4>
+                      <p className="text-sm text-orange-700 mt-1">
+                        The exported PDF will include a watermark and be limited to 5 photos per inspection.
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 border rounded-lg">
@@ -447,25 +476,29 @@ export default function DemoPage(): React.JSX.Element {
                   <Button className="flex items-center">
                     <Download className="h-4 w-4 mr-2" />
                     Download PDF
-                    <Badge variant="secondary" className="ml-2">DEMO</Badge>
+                    {!isPaid && <Badge variant="secondary" className="ml-2">WATERMARKED</Badge>}
                   </Button>
                 </div>
               </div>
 
-              {/* Ad Banner - Before Upgrade CTA */}
-              <div className="my-6">
-                <InContentBanner />
-              </div>
+              {/* Ad Banner - Only show for free tier */}
+              {!isPaid && (
+                <div className="my-6">
+                  <InContentBanner />
+                </div>
+              )}
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h4 className="font-medium text-blue-800 mb-2">Upgrade to Pro</h4>
-                <p className="text-sm text-blue-700 mb-3">
-                  Get unlimited inspections, up to 100 photos per inspection, and professional PDFs without watermarks.
-                </p>
-                <Button asChild>
-                  <Link href="/purchase">Upgrade to Pro - $29</Link>
-                </Button>
-              </div>
+              {!isPaid && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h4 className="font-medium text-blue-800 mb-2">Upgrade to Pro</h4>
+                  <p className="text-sm text-blue-700 mb-3">
+                    Get unlimited inspections, up to 100 photos per inspection, and professional PDFs without watermarks.
+                  </p>
+                  <Button asChild>
+                    <Link href="/purchase">Upgrade to Pro - $29</Link>
+                  </Button>
+                </div>
+              )}
 
               <div className="flex space-x-3">
                 <Button variant="outline" onClick={() => setStep('rooms')} className="flex-1">
@@ -483,10 +516,12 @@ export default function DemoPage(): React.JSX.Element {
           </Card>
         )}
 
-        {/* Footer Ad Banner */}
-        <div className="mt-8">
-          <FooterBanner />
-        </div>
+        {/* Footer Ad Banner - Only show for free tier */}
+        {!isPaid && (
+          <div className="mt-8">
+            <FooterBanner />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, CheckCircle, CreditCard, Shield, Zap } from 'lucide-react';
 import { getStripeClient } from '@/lib/stripe';
+import { FooterBanner } from '@/components/ui/ad-banner';
 
 export default function PurchasePage(): React.JSX.Element {
   const [loading, setLoading] = useState(false);
@@ -132,17 +133,17 @@ export default function PurchasePage(): React.JSX.Element {
               </CardContent>
             </Card>
 
-            <Card className="bg-blue-50 border-blue-200">
+            <Card className="bg-green-50 border-green-200">
               <CardHeader>
-                <CardTitle className="flex items-center text-blue-800">
+                <CardTitle className="flex items-center text-green-800">
                   <Shield className="h-6 w-6 mr-2" />
-                  Money-Back Guarantee
+                  Secure & Professional
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-blue-700">
-                  Try Landlord PDF Pro risk-free for 7 days. If you're not completely satisfied, 
-                  we'll refund your purchase, no questions asked.
+                <p className="text-green-700">
+                  Trusted by thousands of landlords and property managers. 
+                  Secure payment processing and instant access to all features.
                 </p>
               </CardContent>
             </Card>
@@ -200,7 +201,7 @@ export default function PurchasePage(): React.JSX.Element {
                     Secure payment powered by Stripe
                   </p>
                   <p className="text-sm text-gray-500">
-                    7-day money-back guarantee
+                    Instant access • No monthly fees
                   </p>
                 </div>
               </CardContent>
@@ -242,11 +243,11 @@ export default function PurchasePage(): React.JSX.Element {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">What if I'm not satisfied?</CardTitle>
+                <CardTitle className="text-lg">How do I get started?</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
-                  We offer a 7-day money-back guarantee. If you're not happy, we'll refund your purchase.
+                  After purchase, you'll get instant access. Create your first inspection in minutes with our guided setup.
                 </p>
               </CardContent>
             </Card>
@@ -261,6 +262,11 @@ export default function PurchasePage(): React.JSX.Element {
               </CardContent>
             </Card>
           </div>
+        </div>
+
+        {/* Footer Ad Banner - After FAQ, before page end */}
+        <div className="mt-12">
+          <FooterBanner />
         </div>
       </div>
     </div>

@@ -17,8 +17,8 @@ export default function HomePage(): React.JSX.Element {
               <h1 className="text-2xl font-bold text-gray-900">Landlord PDF Pro</h1>
             </div>
             <nav className="flex items-center space-x-4">
-              <Link href="/demo" className="text-gray-600 hover:text-gray-900">
-                Try Demo
+              <Link href="/app" className="text-gray-600 hover:text-gray-900">
+                Try Free
               </Link>
               <Link href="/auth/signin" className="text-gray-600 hover:text-gray-900">
                 Sign In
@@ -47,7 +47,7 @@ export default function HomePage(): React.JSX.Element {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" asChild className="text-lg px-8 py-4">
-              <Link href="/demo">Try Free Demo</Link>
+              <Link href="/app">Try Free</Link>
             </Button>
             <Button size="lg" variant="outline" asChild className="text-lg px-8 py-4">
               <Link href="/purchase">Buy Now - $29</Link>
@@ -214,7 +214,7 @@ export default function HomePage(): React.JSX.Element {
                   Watermarked PDFs
                 </div>
                 <Button className="w-full mt-6" variant="outline" asChild>
-                  <Link href="/demo">Start Free Demo</Link>
+                  <Link href="/app">Start Free</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -276,7 +276,7 @@ export default function HomePage(): React.JSX.Element {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" variant="secondary" asChild className="text-lg px-8 py-4">
-              <Link href="/demo">Try Free Demo</Link>
+              <Link href="/app">Try Free</Link>
             </Button>
             <Button size="lg" variant="outline" asChild className="text-lg px-8 py-4 text-white border-white hover:bg-white hover:text-blue-600">
               <Link href="/purchase">Buy Now - $29</Link>
