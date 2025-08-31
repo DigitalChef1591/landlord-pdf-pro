@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Plus, Camera, FileText, Download, AlertTriangle } from 'lucide-react';
-import { SidebarBanner, InContentBanner, FooterBanner } from '@/components/ui/ad-banner';
+import { SidebarBanner, InContentBanner, FooterBanner } from '../../components/ui/ad-banner';
 // Temporary inline types and data until we fix the package imports
 const DEFAULT_ROOM_TEMPLATES = [
   { name: 'Kitchen', items: ['Refrigerator', 'Stove/Oven', 'Dishwasher', 'Sink', 'Cabinets', 'Countertops', 'Flooring'] },
