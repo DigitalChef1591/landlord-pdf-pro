@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, FileText, Camera, Signature, Download, Shield } from 'lucide-react';
+import { HeaderBanner, InContentBanner, FooterBanner } from '@/components/ui/ad-banner';
 
 export default function HomePage(): React.JSX.Element {
   return (
@@ -19,7 +20,7 @@ export default function HomePage(): React.JSX.Element {
               <Link href="/demo" className="text-gray-600 hover:text-gray-900">
                 Try Demo
               </Link>
-              <Link href="/auth/login" className="text-gray-600 hover:text-gray-900">
+              <Link href="/auth/signin" className="text-gray-600 hover:text-gray-900">
                 Sign In
               </Link>
               <Button asChild>
@@ -29,6 +30,9 @@ export default function HomePage(): React.JSX.Element {
           </div>
         </div>
       </header>
+
+      {/* Header Ad */}
+      <HeaderBanner />
 
       {/* Hero Section */}
       <section className="py-20">
@@ -172,6 +176,9 @@ export default function HomePage(): React.JSX.Element {
           </div>
         </div>
       </section>
+
+      {/* Mid-Content Ad */}
+      <InContentBanner />
 
       {/* Pricing Section */}
       <section className="py-16 bg-gray-50">
