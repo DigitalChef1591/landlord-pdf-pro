@@ -42,7 +42,7 @@ type Inspection = {
   };
 };
 
-export default function DemoPage(): JSX.Element {
+export default function DemoPage(): React.JSX.Element {
   const [step, setStep] = useState<'property' | 'inspection' | 'rooms' | 'export'>('property');
   const [property, setProperty] = useState<Partial<Property>>({
     name: '',

@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, FileText, Calendar, MapPin, Download, Settings, LogOut } from 'lucide-react';
 import Link from 'next/link';
 
-export default async function DashboardPage() {
+export default async function DashboardPage(): Promise<React.JSX.Element> {
   const supabase = await createSupabaseServerClient();
   
   // Check if user is authenticated

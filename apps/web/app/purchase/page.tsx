@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, CheckCircle, CreditCard, Shield, Zap } from 'lucide-react';
 import { getStripe } from '@/lib/stripe';
 
-export default function PurchasePage() {
+export default function PurchasePage(): React.JSX.Element {
   const [loading, setLoading] = useState(false);
 
   const handlePurchase = async () => {

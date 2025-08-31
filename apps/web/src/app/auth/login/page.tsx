@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { ArrowLeft, Mail, CheckCircle } from 'lucide-react';
 import { createSupabaseBrowserClient } from '@/lib/supabase';
 
-export default function LoginPage() {
+export default function LoginPage(): React.JSX.Element {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);

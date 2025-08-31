@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, Download, Mail, Smartphone } from 'lucide-react';
 
-export default function ThankYouPage() {
+export default function ThankYouPage(): React.JSX.Element {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">

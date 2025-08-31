@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase';
-import { InspectionDocument } from '@landlord/pdf';
-import { renderToBuffer } from '@react-pdf/renderer';
 
 export async function GET(
   request: NextRequest,
@@ -49,98 +47,29 @@ export async function GET(
       return NextResponse.json({ error: 'Inspection not found' }, { status: 404 });
     }
 
-    // Check if PDF already exists and is recent (within 1 hour)
-    const recentExport = inspection.exports?.find((exp: any) => {
-      const exportTime = new Date(exp.created_at);
-      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-      return exportTime > oneHourAgo;
-    });
-
-    if (recentExport) {
-      // Return existing PDF URL
-      const { data: signedUrl } = await supabase.storage
-        .from('exports')
-        .createSignedUrl(recentExport.storage_path, 60 * 60 * 24 * 7); // 7 days
-
-      if (signedUrl) {
-        return NextResponse.json({ 
-          url: signedUrl.signedUrl,
-          cached: true 
-        });
-      }
-    }
-
-    // Generate new PDF
-    const pdfBuffer = await renderToBuffer(
-      InspectionDocument({
-        inspection: {
-          id: inspection.id,
-          type: inspection.type,
-          date: inspection.date,
-          notes: inspection.notes,
-          payload: inspection.payload,
-          property: {
-            name: inspection.properties.name,
-            address: inspection.properties.address,
-          },
-          photos: inspection.photos || [],
-          signatures: inspection.signatures || [],
-        },
-        watermark: false, // Pro users get no watermark
-      })
-    );
-
-    // Upload PDF to Supabase Storage
-    const fileName = `${user.id}/${inspection.id}/${Date.now()}.pdf`;
-    const { data: uploadData, error: uploadError } = await supabase.storage
-      .from('exports')
-      .upload(fileName, pdfBuffer, {
-        contentType: 'application/pdf',
-        cacheControl: '3600',
-      });
-
-    if (uploadError) {
-      console.error('Upload error:', uploadError);
-      return NextResponse.json({ error: 'Failed to save PDF' }, { status: 500 });
-    }
-
-    // Record the export in the database
-    const { error: recordError } = await supabase
-      .from('exports')
-      .insert({
-        inspection_id: inspection.id,
-        storage_path: fileName,
-      });
-
-    if (recordError) {
-      console.error('Record error:', recordError);
-    }
-
-    // Create signed URL for download
-    const { data: signedUrl, error: signedUrlError } = await supabase.storage
-      .from('exports')
-      .createSignedUrl(fileName, 60 * 60 * 24 * 7); // 7 days
-
-    if (signedUrlError || !signedUrl) {
-      return NextResponse.json({ error: 'Failed to create download link' }, { status: 500 });
-    }
-
-    // Log the export event
+    // Log the export attempt
     await supabase
       .from('events')
       .insert({
         user_id: user.id,
-        name: 'pdf_export',
+        name: 'pdf_export_attempted',
         meta: {
           inspection_id: inspection.id,
-          property_name: inspection.properties.name,
+          property_name: inspection.properties?.name || 'Unknown Property',
+          status: 'temporarily_disabled'
         },
       });
 
+    // TODO: PDF generation temporarily disabled during deployment
+    // This will be re-enabled once the PDF package React type conflicts are resolved
+    
+    // For now, return a placeholder response
     return NextResponse.json({ 
-      url: signedUrl.signedUrl,
-      cached: false 
-    });
+      error: 'PDF generation temporarily unavailable',
+      message: 'PDF export feature is being updated and will be available soon.',
+      inspection_id: inspection.id,
+      property_name: inspection.properties?.name || 'Unknown Property'
+    }, { status: 503 });
 
   } catch (error) {
     console.error('PDF generation error:', error);
