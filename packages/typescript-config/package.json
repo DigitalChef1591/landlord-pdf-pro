@@ -5,5 +5,10 @@
   "license": "MIT",
   "publishConfig": {
     "access": "public"
+  },
+  "scripts": {
+    "build": "echo 'No build needed for TypeScript config'",
+    "lint": "echo 'No lint needed for TypeScript config'",
+    "check-types": "echo 'No type check needed for TypeScript config'"
   }
 }
