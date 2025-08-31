@@ -8,7 +8,7 @@ declare global {
   }
 }
 
-export function HeaderBanner() {
+export function HeaderBanner(): React.JSX.Element {
   useEffect(() => {
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
@@ -31,7 +31,7 @@ export function HeaderBanner() {
   );
 }
 
-export function SidebarBanner() {
+export function SidebarBanner(): React.JSX.Element {
   useEffect(() => {
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
@@ -53,7 +53,7 @@ export function SidebarBanner() {
   );
 }
 
-export function InContentBanner() {
+export function InContentBanner(): React.JSX.Element {
   useEffect(() => {
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
@@ -79,7 +79,7 @@ export function InContentBanner() {
   );
 }
 
-export function FooterBanner() {
+export function FooterBanner(): React.JSX.Element {
   useEffect(() => {
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});

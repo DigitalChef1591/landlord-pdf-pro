@@ -36,3 +36,6 @@ export function createSupabaseServiceClient() {
     }
   })
 }
+
+// Additional exports for compatibility
+export const createSupabaseServerClient = createSupabaseServiceClient

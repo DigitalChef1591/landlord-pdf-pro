@@ -5,7 +5,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
 }
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2024-06-20',
+  apiVersion: '2025-08-27.basil',
   typescript: true,
 })
 
@@ -27,3 +27,7 @@ if (!STRIPE_CONFIG.publishableKey) {
 if (!STRIPE_CONFIG.webhookSecret) {
   throw new Error('STRIPE_WEBHOOK_SECRET is not set')
 }
+
+// Additional exports for compatibility
+export const getStripe = () => stripe
+export const getStripeClient = () => stripe

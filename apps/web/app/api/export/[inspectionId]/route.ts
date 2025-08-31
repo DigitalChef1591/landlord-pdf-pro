@@ -3,10 +3,11 @@ import { createSupabaseServerClient } from '@/lib/supabase';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { inspectionId: string } }
+  { params }: { params: Promise<{ inspectionId: string }> }
 ) {
   try {
-    const supabase = await createSupabaseServerClient();
+    const resolvedParams = await params;
+    const supabase = createSupabaseServerClient();
     
     // Check if user is authenticated
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -39,7 +40,7 @@ export async function GET(
         signatures (*),
         exports (*)
       `)
-      .eq('id', params.inspectionId)
+      .eq('id', resolvedParams.inspectionId)
       .eq('user_id', user.id)
       .single();
 

@@ -14,14 +14,14 @@ export async function POST(request: NextRequest) {
       payment_method_types: ['card'],
       line_items: [
         {
-          price: priceId || STRIPE_CONFIG.PRICE_ID,
+          price: priceId || STRIPE_CONFIG.priceId,
           quantity: 1,
         },
       ],
       success_url: successUrl,
       cancel_url: cancelUrl,
       metadata: {
-        product: STRIPE_CONFIG.PRODUCT_NAME,
+        product: 'Landlord PDF Pro',
       },
     })
 

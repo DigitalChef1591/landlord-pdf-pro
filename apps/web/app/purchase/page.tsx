@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, CheckCircle, CreditCard, Shield, Zap } from 'lucide-react';
-import { getStripeClient } from '@/lib/stripe';
 import { FooterBanner } from '@/components/ui/ad-banner';
 
 export default function PurchasePage(): React.JSX.Element {
@@ -31,10 +30,9 @@ export default function PurchasePage(): React.JSX.Element {
 
       const { sessionId } = await response.json();
       
-      // Redirect to Stripe Checkout
-      const stripe = await getStripeClient();
-      if (stripe) {
-        await stripe.redirectToCheckout({ sessionId });
+      // Redirect to Stripe Checkout using the session URL
+      if (sessionId) {
+        window.location.href = `https://checkout.stripe.com/pay/${sessionId}`;
       }
     } catch (error) {
       console.error('Error creating checkout session:', error);
