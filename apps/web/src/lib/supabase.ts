@@ -2,19 +2,33 @@ import { createClient } from '@supabase/supabase-js'
 import { createBrowserClient, createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+// Lazy initialization helpers
+function getSupabaseConfig() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Missing Supabase environment variables')
+  }
+  
+  return { supabaseUrl, supabaseAnonKey }
+}
 
-// Client-side Supabase client
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Client-side Supabase client - lazy initialization
+export function getSupabaseClient() {
+  const { supabaseUrl, supabaseAnonKey } = getSupabaseConfig()
+  return createClient(supabaseUrl, supabaseAnonKey)
+}
 
 // Browser client for client components
 export function createSupabaseBrowserClient() {
+  const { supabaseUrl, supabaseAnonKey } = getSupabaseConfig()
   return createBrowserClient(supabaseUrl, supabaseAnonKey)
 }
 
 // Server client for server components and API routes
 export async function createSupabaseServerClient() {
+  const { supabaseUrl, supabaseAnonKey } = getSupabaseConfig()
   const cookieStore = await cookies()
   
   return createServerClient(supabaseUrl, supabaseAnonKey, {
@@ -30,6 +44,13 @@ export async function createSupabaseServerClient() {
       },
     },
   })
+}
+
+// Legacy export for backward compatibility - use getSupabaseClient() instead
+export const supabase = {
+  get client() {
+    return getSupabaseClient()
+  }
 }
 
 // Database types

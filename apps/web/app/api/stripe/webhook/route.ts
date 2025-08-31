@@ -18,10 +18,15 @@ export async function POST(request: NextRequest) {
     // Get Stripe instance (lazy initialization)
     const stripe = getStripe()
     
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
+    if (!webhookSecret) {
+      throw new Error('STRIPE_WEBHOOK_SECRET is not set')
+    }
+    
     event = stripe.webhooks.constructEvent(
       body,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET!
+      webhookSecret
     )
   } catch (error) {
     console.error('Webhook signature verification failed:', error)
