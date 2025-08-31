@@ -1,13 +1,21 @@
 import Stripe from 'stripe'
 import { loadStripe } from '@stripe/stripe-js'
 
-// Server-side Stripe instance
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-08-27.basil',
-})
+// Server-side Stripe instance - lazy initialization
+export const getStripe = () => {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error('STRIPE_SECRET_KEY is not set')
+  }
+  return new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: '2025-08-27.basil',
+  })
+}
+
+// Legacy export for backward compatibility
+export const stripe = getStripe()
 
 // Client-side Stripe instance
-export const getStripe = () => {
+export const getStripeClient = () => {
   return loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 }
 

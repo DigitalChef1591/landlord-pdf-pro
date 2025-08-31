@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, CheckCircle, CreditCard, Shield, Zap } from 'lucide-react';
-import { getStripe } from '@/lib/stripe';
+import { getStripeClient } from '@/lib/stripe';
 
 export default function PurchasePage(): React.JSX.Element {
   const [loading, setLoading] = useState(false);
@@ -31,7 +31,7 @@ export default function PurchasePage(): React.JSX.Element {
       const { sessionId } = await response.json();
       
       // Redirect to Stripe Checkout
-      const stripe = await getStripe();
+      const stripe = await getStripeClient();
       if (stripe) {
         await stripe.redirectToCheckout({ sessionId });
       }
