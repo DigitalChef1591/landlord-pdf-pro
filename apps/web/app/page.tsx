@@ -1,522 +1,404 @@
-'use client';
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { CheckCircle, FileText, Camera, Users, Download, Star, ArrowRight, Shield, Zap } from "lucide-react";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Plus, Camera, FileText, Download, AlertTriangle, Crown } from 'lucide-react';
-import { InContentBanner, FooterBanner } from '@/components/ui/ad-banner';
-
-// Temporary inline types and data until we fix the package imports
-const DEFAULT_ROOM_TEMPLATES = [
-  { name: 'Kitchen', items: ['Refrigerator', 'Stove/Oven', 'Dishwasher', 'Sink', 'Cabinets', 'Countertops', 'Flooring'] },
-  { name: 'Living Room', items: ['Walls', 'Ceiling', 'Flooring', 'Windows', 'Doors', 'Light Fixtures', 'Outlets'] },
-  { name: 'Bedroom', items: ['Walls', 'Ceiling', 'Flooring', 'Windows', 'Closet', 'Light Fixtures', 'Outlets'] },
-  { name: 'Bathroom', items: ['Toilet', 'Sink', 'Shower/Tub', 'Tiles', 'Mirror', 'Light Fixtures', 'Ventilation'] },
-  { name: 'Hallway', items: ['Walls', 'Ceiling', 'Flooring', 'Light Fixtures', 'Outlets'] },
-  { name: 'Exterior', items: ['Front Door', 'Windows', 'Siding', 'Roof', 'Gutters', 'Landscaping'] }
-];
-
-type Property = {
-  id?: string;
-  name: string;
-  address: string;
-};
-
-type Inspection = {
-  id?: string;
-  type: 'move_in' | 'move_out';
-  date: string;
-  notes?: string;
-  payload: {
-    rooms: Array<{
-      id: string;
-      name: string;
-      items: Array<{
-        id: string;
-        name: string;
-        condition: 'good' | 'needs_repair' | 'na';
-        notes: string;
-        photos: string[];
-      }>;
-    }>;
-  };
-};
-
-export default function HomePage(): React.JSX.Element {
-  const [step, setStep] = useState<'property' | 'inspection' | 'rooms' | 'export'>('property');
-  const [isPaid, setIsPaid] = useState(false); // TODO: Check actual payment status from Supabase
-  const [property, setProperty] = useState<Partial<Property>>({
-    name: '',
-    address: ''
-  });
-  const [inspection, setInspection] = useState<Partial<Inspection>>({
-    type: 'move_in',
-    date: new Date().toISOString().split('T')[0],
-    notes: '',
-    payload: { rooms: [] }
-  });
-
-  // TODO: Check user's payment status from Supabase
-  useEffect(() => {
-    // This would check the user's entitlements from Supabase
-    // For now, we'll assume free tier
-    setIsPaid(false);
-  }, []);
-
-  const handlePropertySubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (property.name && property.address) {
-      setStep('inspection');
-    }
-  };
-
-  const handleInspectionSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setStep('rooms');
-  };
-
-  const addRoom = (roomType: string) => {
-    const template = DEFAULT_ROOM_TEMPLATES.find(t => t.name === roomType);
-    if (template && inspection.payload) {
-      const newRoom = {
-        id: Date.now().toString(),
-        name: template.name,
-        items: template.items.map(item => ({
-          id: Date.now().toString() + Math.random(),
-          name: item,
-          condition: 'good' as const,
-          notes: '',
-          photos: []
-        }))
-      };
-      
-      setInspection({
-        ...inspection,
-        payload: {
-          ...inspection.payload,
-          rooms: [...(inspection.payload.rooms || []), newRoom]
-        }
-      });
-    }
-  };
-
-  const updateItemCondition = (roomId: string, itemId: string, condition: 'good' | 'needs_repair' | 'na') => {
-    if (!inspection.payload?.rooms) return;
-    
-    const updatedRooms = inspection.payload.rooms.map(room => {
-      if (room.id === roomId) {
-        return {
-          ...room,
-          items: room.items.map(item => 
-            item.id === itemId ? { ...item, condition } : item
-          )
-        };
-      }
-      return room;
-    });
-
-    setInspection({
-      ...inspection,
-      payload: {
-        ...inspection.payload,
-        rooms: updatedRooms
-      }
-    });
-  };
-
-  const updateItemNotes = (roomId: string, itemId: string, notes: string) => {
-    if (!inspection.payload?.rooms) return;
-    
-    const updatedRooms = inspection.payload.rooms.map(room => {
-      if (room.id === roomId) {
-        return {
-          ...room,
-          items: room.items.map(item => 
-            item.id === itemId ? { ...item, notes } : item
-          )
-        };
-      }
-      return room;
-    });
-
-    setInspection({
-      ...inspection,
-      payload: {
-        ...inspection.payload,
-        rooms: updatedRooms
-      }
-    });
-  };
-
-  const handleExport = () => {
-    setStep('export');
-  };
-
+export default function Home(): React.JSX.Element {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
-              <FileText className="h-6 w-6 text-blue-600 mr-2" />
-              <h1 className="text-xl font-semibold text-gray-900">Landlord PDF Pro</h1>
-              {isPaid ? (
-                <Badge className="ml-2 bg-blue-600">
-                  <Crown className="h-3 w-3 mr-1" />
-                  Pro
-                </Badge>
-              ) : (
-                <Badge variant="secondary" className="ml-2">Free</Badge>
-              )}
+              <FileText className="h-8 w-8 text-blue-600 mr-3" />
+              <h1 className="text-2xl font-bold text-gray-900">Landlord PDF Pro</h1>
             </div>
-            <div className="flex items-center space-x-2">
-              {!isPaid && (
-                <>
-                  <AlertTriangle className="h-5 w-5 text-orange-500" />
-                  <span className="text-sm text-orange-600">Free Tier - Limited Features</span>
-                </>
-              )}
-              {!isPaid && (
-                <Button asChild size="sm">
-                  <Link href="/purchase">Upgrade to Pro - $29</Link>
-                </Button>
-              )}
+            <div className="flex items-center space-x-4">
+              <Link href="/demo" className="text-gray-600 hover:text-gray-900">
+                Try Free Demo
+              </Link>
+              <Button asChild>
+                <Link href="/purchase">Buy Now - $29</Link>
+              </Button>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Ad Banner - Only show for free tier */}
-        {!isPaid && (
-          <div className="mb-6">
-            <InContentBanner />
+      {/* Hero Section */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <Badge className="mb-4 bg-blue-600">Professional Property Management</Badge>
+          <h1 className="text-5xl font-bold text-gray-900 mb-6">
+            Professional Move-In/Out<br />
+            <span className="text-blue-600">Inspection Reports</span>
+          </h1>
+          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            Create detailed property inspection reports with photos, signatures, and professional PDF exports. 
+            Perfect for landlords, property managers, and real estate professionals.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild size="lg" className="text-lg px-8 py-4">
+              <Link href="/demo">
+                Try Free Demo
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="text-lg px-8 py-4">
+              <Link href="/purchase">Buy Now - $29</Link>
+            </Button>
           </div>
-        )}
-
-        {/* Progress Steps */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            {['Property', 'Inspection', 'Rooms', 'Export'].map((stepName, index) => {
-              const stepKey = stepName.toLowerCase() as typeof step;
-              const isActive = step === stepKey;
-              const isCompleted = ['property', 'inspection', 'rooms', 'export'].indexOf(step) > index;
-              
-              return (
-                <div key={stepName} className="flex items-center">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                    isActive ? 'bg-blue-600 text-white' : 
-                    isCompleted ? 'bg-green-600 text-white' : 
-                    'bg-gray-300 text-gray-600'
-                  }`}>
-                    {index + 1}
-                  </div>
-                  <span className={`ml-2 text-sm font-medium ${
-                    isActive ? 'text-blue-600' : 
-                    isCompleted ? 'text-green-600' : 
-                    'text-gray-500'
-                  }`}>
-                    {stepName}
-                  </span>
-                  {index < 3 && (
-                    <div className={`w-16 h-0.5 mx-4 ${
-                      isCompleted ? 'bg-green-600' : 'bg-gray-300'
-                    }`} />
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          <p className="text-sm text-gray-500 mt-4">
+            One-time purchase • No monthly fees • Instant access
+          </p>
         </div>
+      </section>
 
-        {/* Property Step */}
-        {step === 'property' && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Property Information</CardTitle>
-              <CardDescription>Enter the basic details about the property being inspected</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handlePropertySubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Property Name/Unit
-                  </label>
-                  <input
-                    type="text"
-                    value={property.name || ''}
-                    onChange={(e) => setProperty({ ...property, name: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Apartment 2B, Main House"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Property Address
-                  </label>
-                  <textarea
-                    value={property.address || ''}
-                    onChange={(e) => setProperty({ ...property, address: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="123 Main St, City, State 12345"
-                    rows={3}
-                    required
-                  />
-                </div>
-                <Button type="submit" className="w-full">
-                  Continue to Inspection Details
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        )}
+      {/* Features Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Everything You Need for Professional Inspections
+            </h2>
+            <p className="text-xl text-gray-600">
+              Streamline your property inspections with our comprehensive toolkit
+            </p>
+          </div>
 
-        {/* Inspection Step */}
-        {step === 'inspection' && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Inspection Details</CardTitle>
-              <CardDescription>Configure the inspection settings</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleInspectionSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Inspection Type
-                  </label>
-                  <select
-                    value={inspection.type || 'move_in'}
-                    onChange={(e) => setInspection({ ...inspection, type: e.target.value as 'move_in' | 'move_out' })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="move_in">Move-In Inspection</option>
-                    <option value="move_out">Move-Out Inspection</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Inspection Date
-                  </label>
-                  <input
-                    type="date"
-                    value={inspection.date || ''}
-                    onChange={(e) => setInspection({ ...inspection, date: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    General Notes (Optional)
-                  </label>
-                  <textarea
-                    value={inspection.notes || ''}
-                    onChange={(e) => setInspection({ ...inspection, notes: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Any general notes about the inspection..."
-                    rows={3}
-                  />
-                </div>
-                <div className="flex space-x-3">
-                  <Button type="button" variant="outline" onClick={() => setStep('property')} className="flex-1">
-                    Back
-                  </Button>
-                  <Button type="submit" className="flex-1">
-                    Continue to Rooms
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Rooms Step */}
-        {step === 'rooms' && (
-          <div className="space-y-6">
-            <Card>
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="text-center">
               <CardHeader>
-                <CardTitle>Add Rooms</CardTitle>
-                <CardDescription>Select room types to add to your inspection</CardDescription>
+                <div className="mx-auto w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                  <FileText className="h-6 w-6 text-blue-600" />
+                </div>
+                <CardTitle>Room-by-Room Inspection</CardTitle>
+                <CardDescription>
+                  Pre-built templates for kitchens, bathrooms, bedrooms, and more
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {DEFAULT_ROOM_TEMPLATES.map((template) => (
-                    <Button
-                      key={template.name}
-                      variant="outline"
-                      onClick={() => addRoom(template.name)}
-                      className="h-auto p-4 flex flex-col items-center"
-                    >
-                      <Plus className="h-5 w-5 mb-2" />
-                      <span className="text-sm">{template.name}</span>
-                    </Button>
+                <ul className="text-sm text-gray-600 space-y-2">
+                  <li>• Customizable room templates</li>
+                  <li>• Condition tracking (Good/Needs Repair/N/A)</li>
+                  <li>• Detailed notes for each item</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center">
+              <CardHeader>
+                <div className="mx-auto w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                  <Camera className="h-6 w-6 text-green-600" />
+                </div>
+                <CardTitle>Photo Documentation</CardTitle>
+                <CardDescription>
+                  Capture and organize photos for each room and item
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="text-sm text-gray-600 space-y-2">
+                  <li>• High-quality photo capture</li>
+                  <li>• Automatic organization</li>
+                  <li>• EXIF data preservation</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center">
+              <CardHeader>
+                <div className="mx-auto w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                  <Users className="h-6 w-6 text-purple-600" />
+                </div>
+                <CardTitle>Digital Signatures</CardTitle>
+                <CardDescription>
+                  Collect tenant and landlord signatures digitally
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="text-sm text-gray-600 space-y-2">
+                  <li>• Touch-friendly signature capture</li>
+                  <li>• Legally binding documentation</li>
+                  <li>• Timestamp verification</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* PDF Export Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <Badge className="mb-4 bg-green-600">Professional Output</Badge>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+                Generate Professional PDF Reports
+              </h2>
+              <p className="text-lg text-gray-600 mb-6">
+                Export your inspections as professional, legally-compliant PDF reports 
+                that you can share with tenants, property owners, and legal teams.
+              </p>
+              <div className="space-y-4">
+                <div className="flex items-start">
+                  <CheckCircle className="h-6 w-6 text-green-600 mr-3 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold">Professional Layout</h4>
+                    <p className="text-gray-600">Clean, organized reports with your branding</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <CheckCircle className="h-6 w-6 text-green-600 mr-3 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold">Photo Integration</h4>
+                    <p className="text-gray-600">All photos automatically included and organized</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <CheckCircle className="h-6 w-6 text-green-600 mr-3 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold">Digital Signatures</h4>
+                    <p className="text-gray-600">Embedded signatures for legal compliance</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white p-8 rounded-lg shadow-lg">
+              <div className="flex items-center mb-4">
+                <Download className="h-6 w-6 text-blue-600 mr-2" />
+                <h3 className="text-lg font-semibold">Sample Report</h3>
+              </div>
+              <div className="bg-gray-100 h-64 rounded-lg flex items-center justify-center">
+                <div className="text-center">
+                  <FileText className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-500">Professional PDF Preview</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            Simple, Transparent Pricing
+          </h2>
+          <p className="text-xl text-gray-600 mb-12">
+            One-time purchase. No monthly fees. Lifetime access.
+          </p>
+
+          <div className="max-w-lg mx-auto">
+            <Card className="border-2 border-blue-500 shadow-xl">
+              <CardHeader className="text-center">
+                <Badge className="w-fit mx-auto mb-4 bg-blue-600">Most Popular</Badge>
+                <CardTitle className="text-3xl">Landlord PDF Pro</CardTitle>
+                <CardDescription>Complete professional toolkit</CardDescription>
+                <div className="text-5xl font-bold text-gray-900 mt-4">$29</div>
+                <p className="text-gray-500">One-time purchase</p>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="flex items-center text-sm">
+                    <CheckCircle className="h-4 w-4 text-green-600 mr-2" />
+                    Unlimited inspections & exports
+                  </div>
+                  <div className="flex items-center text-sm">
+                    <CheckCircle className="h-4 w-4 text-green-600 mr-2" />
+                    Up to 100 photos per inspection
+                  </div>
+                  <div className="flex items-center text-sm">
+                    <CheckCircle className="h-4 w-4 text-green-600 mr-2" />
+                    Professional PDFs (no watermark)
+                  </div>
+                  <div className="flex items-center text-sm">
+                    <CheckCircle className="h-4 w-4 text-green-600 mr-2" />
+                    Digital signature collection
+                  </div>
+                  <div className="flex items-center text-sm">
+                    <CheckCircle className="h-4 w-4 text-green-600 mr-2" />
+                    Cloud storage & sync
+                  </div>
+                  <div className="flex items-center text-sm">
+                    <CheckCircle className="h-4 w-4 text-green-600 mr-2" />
+                    Priority email support
+                  </div>
+                </div>
+
+                <Button asChild className="w-full text-lg py-6">
+                  <Link href="/purchase">
+                    Get Started Now
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+
+                <div className="text-center">
+                  <Link href="/demo" className="text-blue-600 hover:text-blue-800 text-sm">
+                    Try the free demo first →
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Trusted by Property Professionals
+            </h2>
+            <p className="text-xl text-gray-600">
+              See what landlords and property managers are saying
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
                   ))}
+                </div>
+                <p className="text-gray-600 mb-4">
+                  "This tool has saved me hours on each inspection. The PDF reports look 
+                  incredibly professional and my tenants love the digital process."
+                </p>
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-blue-600 font-semibold">SM</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold">Sarah Mitchell</p>
+                    <p className="text-sm text-gray-500">Property Manager</p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Room Items */}
-            {inspection.payload?.rooms?.map((room) => (
-              <Card key={room.id}>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    {room.name}
-                    <Badge variant="secondary" className="ml-2">
-                      {room.items.length} items
-                    </Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {room.items.map((item) => (
-                      <div key={item.id} className="border rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-3">
-                          <h4 className="font-medium">{item.name}</h4>
-                          <div className="flex space-x-2">
-                            {(['good', 'needs_repair', 'na'] as const).map((condition) => (
-                              <Button
-                                key={condition}
-                                size="sm"
-                                variant={item.condition === condition ? 'default' : 'outline'}
-                                onClick={() => updateItemCondition(room.id, item.id, condition)}
-                                className={`text-xs ${
-                                  condition === 'good' ? 'bg-green-600 hover:bg-green-700' :
-                                  condition === 'needs_repair' ? 'bg-red-600 hover:bg-red-700' :
-                                  'bg-gray-600 hover:bg-gray-700'
-                                }`}
-                              >
-                                {condition === 'good' ? 'Good' :
-                                 condition === 'needs_repair' ? 'Needs Repair' : 'N/A'}
-                              </Button>
-                            ))}
-                          </div>
-                        </div>
-                        <div className="flex space-x-3">
-                          <div className="flex-1">
-                            <textarea
-                              value={item.notes}
-                              onChange={(e) => updateItemNotes(room.id, item.id, e.target.value)}
-                              placeholder="Add notes about this item..."
-                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              rows={2}
-                            />
-                          </div>
-                          <Button variant="outline" size="sm" className="flex items-center">
-                            <Camera className="h-4 w-4 mr-1" />
-                            Add Photo
-                            {!isPaid && <Badge variant="secondary" className="ml-1">Free: 5 max</Badge>}
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-
-            {inspection.payload?.rooms && inspection.payload.rooms.length > 0 && (
-              <div className="flex space-x-3">
-                <Button variant="outline" onClick={() => setStep('inspection')} className="flex-1">
-                  Back
-                </Button>
-                <Button onClick={handleExport} className="flex-1">
-                  Generate Report
-                </Button>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Export Step */}
-        {step === 'export' && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Download className="h-6 w-6 mr-2" />
-                Export Report
-              </CardTitle>
-              <CardDescription>Your inspection report is ready</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {!isPaid && (
-                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-                  <div className="flex items-center">
-                    <AlertTriangle className="h-5 w-5 text-orange-500 mr-2" />
-                    <div>
-                      <h4 className="font-medium text-orange-800">Free Tier Limitations</h4>
-                      <p className="text-sm text-orange-700 mt-1">
-                        The exported PDF will include a watermark and be limited to 5 photos per inspection.
-                      </p>
-                    </div>
-                  </div>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
+                  ))}
                 </div>
-              )}
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 border rounded-lg">
+                <p className="text-gray-600 mb-4">
+                  "The photo organization and signature features are game-changers. 
+                  I can complete inspections faster and with better documentation."
+                </p>
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-green-600 font-semibold">DJ</span>
+                  </div>
                   <div>
-                    <h4 className="font-medium">Inspection Report</h4>
-                    <p className="text-sm text-gray-600">
-                      {property.name} - {inspection.type === 'move_in' ? 'Move-In' : 'Move-Out'} Inspection
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {inspection.payload?.rooms?.length || 0} rooms, Generated on {new Date().toLocaleDateString()}
-                    </p>
+                    <p className="font-semibold">David Johnson</p>
+                    <p className="text-sm text-gray-500">Real Estate Investor</p>
                   </div>
-                  <Button className="flex items-center">
-                    <Download className="h-4 w-4 mr-2" />
-                    Download PDF
-                    {!isPaid && <Badge variant="secondary" className="ml-2">WATERMARKED</Badge>}
-                  </Button>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
 
-              {/* Ad Banner - Only show for free tier */}
-              {!isPaid && (
-                <div className="my-6">
-                  <InContentBanner />
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
+                  ))}
                 </div>
-              )}
-
-              {!isPaid && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <h4 className="font-medium text-blue-800 mb-2">Upgrade to Pro</h4>
-                  <p className="text-sm text-blue-700 mb-3">
-                    Get unlimited inspections, up to 100 photos per inspection, and professional PDFs without watermarks.
-                  </p>
-                  <Button asChild>
-                    <Link href="/purchase">Upgrade to Pro - $29</Link>
-                  </Button>
+                <p className="text-gray-600 mb-4">
+                  "Worth every penny! The one-time purchase model is refreshing, 
+                  and the software pays for itself after just a few inspections."
+                </p>
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-purple-600 font-semibold">LR</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold">Lisa Rodriguez</p>
+                    <p className="text-sm text-gray-500">Landlord</p>
+                  </div>
                 </div>
-              )}
-
-              <div className="flex space-x-3">
-                <Button variant="outline" onClick={() => setStep('rooms')} className="flex-1">
-                  Back to Edit
-                </Button>
-                <Button variant="outline" onClick={() => {
-                  setStep('property');
-                  setProperty({ name: '', address: '' });
-                  setInspection({ type: 'move_in', date: new Date().toISOString().split('T')[0], notes: '', payload: { rooms: [] } });
-                }} className="flex-1">
-                  Start New Inspection
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Footer Ad Banner - Only show for free tier */}
-        {!isPaid && (
-          <div className="mt-8">
-            <FooterBanner />
+              </CardContent>
+            </Card>
           </div>
-        )}
-      </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-blue-600">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold text-white mb-4">
+            Ready to Streamline Your Inspections?
+          </h2>
+          <p className="text-xl text-blue-100 mb-8">
+            Join thousands of property professionals who trust Landlord PDF Pro
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-4">
+              <Link href="/demo">
+                Try Free Demo
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="text-lg px-8 py-4 bg-white text-blue-600 hover:bg-gray-100">
+              <Link href="/purchase">Buy Now - $29</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center mb-4">
+                <FileText className="h-6 w-6 text-blue-400 mr-2" />
+                <span className="text-lg font-semibold">Landlord PDF Pro</span>
+              </div>
+              <p className="text-gray-400">
+                Professional property inspection reports made simple.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Product</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><Link href="/demo" className="hover:text-white">Free Demo</Link></li>
+                <li><Link href="/purchase" className="hover:text-white">Pricing</Link></li>
+                <li><Link href="#" className="hover:text-white">Features</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Support</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><Link href="#" className="hover:text-white">Help Center</Link></li>
+                <li><Link href="#" className="hover:text-white">Contact Us</Link></li>
+                <li><Link href="#" className="hover:text-white">Documentation</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Legal</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><Link href="#" className="hover:text-white">Privacy Policy</Link></li>
+                <li><Link href="#" className="hover:text-white">Terms of Service</Link></li>
+                <li><Link href="#" className="hover:text-white">Refund Policy</Link></li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 Landlord PDF Pro. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
