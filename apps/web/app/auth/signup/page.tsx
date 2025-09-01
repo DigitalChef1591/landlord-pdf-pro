@@ -6,22 +6,24 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, Mail, CheckCircle } from 'lucide-react';
 import { createSupabaseBrowserClient } from '@/lib/supabase';
+import { ArrowLeft } from 'lucide-react';
 
 export default function SignupPage(): React.JSX.Element {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
-  const [sent, setSent] = useState(false);
+  const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+
+  const supabase = createSupabaseBrowserClient();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setMessage('');
 
     try {
-      const supabase = createSupabaseBrowserClient();
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
@@ -32,74 +34,29 @@ export default function SignupPage(): React.JSX.Element {
       if (error) {
         setError(error.message);
       } else {
-        setSent(true);
+        setMessage('Check your email for the signup link!');
       }
     } catch (err) {
-      setError('Something went wrong. Please try again.');
+      setError('An unexpected error occurred');
     } finally {
       setLoading(false);
     }
   };
 
-  if (sent) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <div className="mx-auto w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
-              <CheckCircle className="h-6 w-6 text-green-600" />
-            </div>
-            <CardTitle>Check your email</CardTitle>
-            <CardDescription>
-              We've sent a magic link to <strong>{email}</strong>
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-gray-600 text-center">
-              Click the link in your email to create your account. The link will expire in 1 hour.
-            </p>
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => {
-                setSent(false);
-                setEmail('');
-              }}
-            >
-              Try a different email
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <Link href="/" className="flex items-center text-gray-600 hover:text-gray-900">
-              <ArrowLeft className="h-5 w-5 mr-2" />
-              Back to Home
-            </Link>
-            <div className="flex items-center space-x-4">
-              <Link href="/demo" className="text-gray-600 hover:text-gray-900">
-                Try Demo
-              </Link>
-              <Link href="/purchase" className="text-blue-600 hover:text-blue-800 font-medium">
-                Buy Now
-              </Link>
-            </div>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Back to Home */}
+        <div className="mb-6">
+          <Link href="/" className="flex items-center text-gray-600 hover:text-gray-900">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Home
+          </Link>
         </div>
-      </header>
 
-      <div className="flex items-center justify-center py-12 px-4">
-        <Card className="w-full max-w-md">
+        <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Create your account</CardTitle>
+            <CardTitle className="text-2xl">Create Account</CardTitle>
             <CardDescription>
               Get started with Landlord PDF Pro
             </CardDescription>
@@ -107,7 +64,7 @@ export default function SignupPage(): React.JSX.Element {
           <CardContent>
             <form onSubmit={handleSignup} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email address</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -115,26 +72,34 @@ export default function SignupPage(): React.JSX.Element {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  disabled={loading}
                 />
               </div>
 
               {error && (
-                <div className="text-sm text-red-600 bg-red-50 p-3 rounded-md">
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
                   {error}
                 </div>
               )}
 
-              <Button type="submit" className="w-full" disabled={loading || !email}>
-                <Mail className="h-4 w-4 mr-2" />
-                {loading ? 'Sending...' : 'Create account'}
+              {message && (
+                <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded">
+                  {message}
+                </div>
+              )}
+
+              <Button 
+                type="submit" 
+                className="w-full" 
+                disabled={loading || !email}
+              >
+                {loading ? 'Creating Account...' : 'Create Account'}
               </Button>
             </form>
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
                 Already have an account?{' '}
-                <Link href="/auth/login" className="text-blue-600 hover:text-blue-800 font-medium">
+                <Link href="/auth/login" className="text-blue-600 hover:text-blue-800">
                   Sign in
                 </Link>
               </p>
@@ -142,15 +107,21 @@ export default function SignupPage(): React.JSX.Element {
 
             <div className="mt-4 text-center">
               <p className="text-xs text-gray-500">
-                By creating an account, you agree to our{' '}
-                <Link href="/terms" className="text-blue-600 hover:text-blue-800">
-                  Terms of Service
-                </Link>{' '}
-                and{' '}
-                <Link href="/privacy" className="text-blue-600 hover:text-blue-800">
-                  Privacy Policy
-                </Link>
+                We'll send you a secure signup link via email.
+                <br />
+                No password required!
               </p>
+            </div>
+
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+              <h3 className="font-semibold text-blue-900 mb-2">What you get:</h3>
+              <ul className="text-sm text-blue-800 space-y-1">
+                <li>• Professional PDF inspection reports</li>
+                <li>• Digital signature collection</li>
+                <li>• Cloud storage and sync</li>
+                <li>• Unlimited inspections</li>
+                <li>• Priority email support</li>
+              </ul>
             </div>
           </CardContent>
         </Card>

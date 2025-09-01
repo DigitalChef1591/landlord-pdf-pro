@@ -1,44 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getStripe, STRIPE_CONFIG } from '@/lib/stripe'
+import Stripe from 'stripe'
 
 export async function POST(request: NextRequest) {
   try {
-    const { priceId, successUrl, cancelUrl } = await request.json()
+    const { successUrl, cancelUrl } = await request.json()
 
-    // Check if Stripe is properly configured
-    if (!process.env.STRIPE_SECRET_KEY) {
-      return NextResponse.json(
-        { error: 'Payment system is currently being set up. Please check back soon!' },
-        { status: 503 }
-      )
-    }
+    // Initialize Stripe directly
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      apiVersion: '2025-08-27.basil',
+    })
 
-    // Get Stripe instance (lazy initialization)
-    const stripe = getStripe()
-
-    // Create Stripe checkout session
+    // Create checkout session with explicit configuration
     const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
       payment_method_types: ['card'],
+      mode: 'payment',
       line_items: [
         {
-          price: priceId || STRIPE_CONFIG.priceId,
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'Landlord PDF Pro',
+              description: 'Professional property inspection reports with unlimited features',
+            },
+            unit_amount: 2900, // $29.00
+          },
           quantity: 1,
         },
       ],
-      success_url: successUrl,
-      cancel_url: cancelUrl,
+      success_url: successUrl || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://landlordpdfpro.net'}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: cancelUrl || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://landlordpdfpro.net'}/purchase`,
       metadata: {
-        product: 'Landlord PDF Pro',
+        product: 'landlord-pdf-pro',
       },
     })
 
-    return NextResponse.json({ sessionId: session.id })
-  } catch (error) {
-    console.error('Error creating checkout session:', error)
+    return NextResponse.json({ 
+      sessionId: session.id,
+      url: session.url 
+    })
+  } catch (error: any) {
+    console.error('Stripe checkout error:', error)
     return NextResponse.json(
-      { error: 'Payment system is currently being set up. Please check back soon!' },
-      { status: 503 }
+      { 
+        error: 'Failed to create checkout session',
+        details: error.message 
+      },
+      { status: 500 }
     )
   }
 }

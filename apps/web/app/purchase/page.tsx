@@ -38,10 +38,10 @@ export default function PurchasePage(): React.JSX.Element {
       }
       
       // Redirect to Stripe Checkout using the session URL
-      if (data.sessionId) {
-        window.location.href = `https://checkout.stripe.com/pay/${data.sessionId}`;
+      if (data.url) {
+        window.location.href = data.url;
       } else {
-        throw new Error('No session ID received from server');
+        throw new Error('No checkout URL received from server');
       }
     } catch (error) {
       console.error('Error creating checkout session:', error);
