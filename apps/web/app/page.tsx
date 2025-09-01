@@ -380,23 +380,18 @@ export default function Home(): React.JSX.Element {
               <ul className="space-y-2 text-gray-400">
                 <li><Link href="/demo" className="hover:text-white">Free Demo</Link></li>
                 <li><Link href="/purchase" className="hover:text-white">Pricing</Link></li>
-                <li><Link href="#" className="hover:text-white">Features</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Support</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="#" className="hover:text-white">Help Center</Link></li>
-                <li><Link href="#" className="hover:text-white">Contact Us</Link></li>
-                <li><Link href="#" className="hover:text-white">Documentation</Link></li>
+                <li><span className="text-gray-400">Email: support@landlordpdfpro.net</span></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
+              <h4 className="font-semibold mb-4">Policy</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="#" className="hover:text-white">Privacy Policy</Link></li>
-                <li><Link href="#" className="hover:text-white">Terms of Service</Link></li>
-                <li><Link href="#" className="hover:text-white">Refund Policy</Link></li>
+                <li><span className="text-gray-400">All sales final - No refunds</span></li>
               </ul>
             </div>
           </div>
