@@ -89,7 +89,7 @@ export default function NewInspectionPage(): React.JSX.Element {
       });
     });
     setInspectionData(prev => ({ ...prev, rooms }));
-    setSelectedRoom(DEFAULT_ROOMS[0].name);
+    setSelectedRoom(DEFAULT_ROOMS[0]?.name || '');
   };
 
   const updateItemCondition = (room: string, item: string, condition: string) => {
