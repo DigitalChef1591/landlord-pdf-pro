@@ -84,6 +84,107 @@ export default function PurchasePage(): React.JSX.Element {
           </Badge>
         </div>
 
+        {/* PDF Preview Section */}
+        <div className="mb-16">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <Badge className="mb-4 bg-green-600">Professional Output</Badge>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+                Generate Professional PDF Reports
+              </h2>
+              <p className="text-lg text-gray-600 mb-6">
+                Export your inspections as professional, legally-compliant PDF reports 
+                that you can share with tenants, property owners, and legal teams.
+              </p>
+              <div className="space-y-4">
+                <div className="flex items-start">
+                  <CheckCircle className="h-6 w-6 text-green-600 mr-3 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold">Professional Layout</h4>
+                    <p className="text-gray-600">Clean, organized reports with your branding</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <CheckCircle className="h-6 w-6 text-green-600 mr-3 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold">Photo Integration</h4>
+                    <p className="text-gray-600">All photos automatically included and organized</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <CheckCircle className="h-6 w-6 text-green-600 mr-3 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold">Digital Signatures</h4>
+                    <p className="text-gray-600">Embedded signatures for legal compliance</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white p-8 rounded-lg shadow-xl border">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">Sample Report Preview</h3>
+                <Badge variant="outline" className="text-blue-600 border-blue-600">PDF</Badge>
+              </div>
+              
+              {/* PDF Preview Mock */}
+              <div className="bg-gray-50 rounded-lg p-6 border-2 border-dashed border-gray-200">
+                <div className="space-y-4">
+                  {/* Header */}
+                  <div className="bg-blue-600 text-white p-4 rounded text-center">
+                    <h4 className="font-bold text-lg">PROPERTY INSPECTION REPORT</h4>
+                    <p className="text-sm opacity-90">Move-In Inspection • 123 Main St, Apt 2B</p>
+                  </div>
+                  
+                  {/* Content Preview */}
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center p-3 bg-white rounded border">
+                      <span className="font-medium text-sm">Living Room</span>
+                      <span className="text-green-600 text-sm">✓ Good</span>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-white rounded border">
+                      <span className="font-medium text-sm">Kitchen</span>
+                      <span className="text-green-600 text-sm">✓ Good</span>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-white rounded border">
+                      <span className="font-medium text-sm">Bathroom</span>
+                      <span className="text-yellow-600 text-sm">⚠ Needs Repair</span>
+                    </div>
+                  </div>
+                  
+                  {/* Photo Grid Preview */}
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="bg-gray-200 rounded aspect-square flex items-center justify-center">
+                      <span className="text-xs text-gray-500">Photo 1</span>
+                    </div>
+                    <div className="bg-gray-200 rounded aspect-square flex items-center justify-center">
+                      <span className="text-xs text-gray-500">Photo 2</span>
+                    </div>
+                    <div className="bg-gray-200 rounded aspect-square flex items-center justify-center">
+                      <span className="text-xs text-gray-500">Photo 3</span>
+                    </div>
+                  </div>
+                  
+                  {/* Signatures */}
+                  <div className="flex justify-between pt-4 border-t">
+                    <div className="text-center">
+                      <div className="w-24 h-8 bg-gray-200 rounded mb-1"></div>
+                      <p className="text-xs text-gray-500">Tenant Signature</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-24 h-8 bg-gray-200 rounded mb-1"></div>
+                      <p className="text-xs text-gray-500">Landlord Signature</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-4 text-center">
+                <p className="text-sm text-gray-500">Professional, legally-compliant PDF format</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           {/* Product Details */}
           <div className="space-y-8">
