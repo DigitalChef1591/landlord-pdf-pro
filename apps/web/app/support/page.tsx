@@ -24,10 +24,10 @@ export default function Support(): React.ReactElement {
                 <p className="text-gray-600">Available: Monday - Friday, 9 AM - 5 PM EST</p>
               </div>
               <div className="bg-green-50 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Billing & Refunds</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Billing Support</h3>
                 <p className="text-gray-600 mb-2">Email: billing@landlordpdfpro.net</p>
-                <p className="text-gray-600 mb-2">7-day money-back guarantee</p>
-                <p className="text-gray-600">Refunds processed within 5-10 business days</p>
+                <p className="text-gray-600 mb-2">All sales are final</p>
+                <p className="text-gray-600">Payment issues and account access</p>
               </div>
             </div>
           </div>
@@ -56,8 +56,8 @@ export default function Support(): React.ReactElement {
               </div>
 
               <div className="border-b border-gray-200 pb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Can I get a refund?</h3>
-                <p className="text-gray-600">Yes! We offer a 7-day money-back guarantee. If you're not satisfied with the service, contact billing@landlordpdfpro.net within 7 days of purchase for a full refund.</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">What is your refund policy?</h3>
+                <p className="text-gray-600">All sales are final. No refunds will be provided under any circumstances. By purchasing, you acknowledge and agree to this no-refund policy.</p>
               </div>
 
               <div className="border-b border-gray-200 pb-6">

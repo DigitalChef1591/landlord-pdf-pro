@@ -462,7 +462,7 @@ export default function Home(): React.JSX.Element {
               <ul className="space-y-2 text-gray-400">
                 <li><Link href="/support" className="hover:text-white">Help Center</Link></li>
                 <li><span className="text-gray-400">Email: support@landlordpdfpro.net</span></li>
-                <li><span className="text-gray-400">7-day money-back guarantee</span></li>
+                <li><span className="text-gray-400">All sales are final</span></li>
               </ul>
             </div>
             <div>

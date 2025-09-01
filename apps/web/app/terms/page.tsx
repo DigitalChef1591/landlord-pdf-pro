@@ -42,17 +42,8 @@ export default function TermsOfService(): React.ReactElement {
             <ul className="list-disc pl-6 mb-4">
               <li>Payment of $29 provides lifetime access to all features</li>
               <li>All payments are processed securely through Stripe</li>
-              <li>Payments are non-refundable except as required by law</li>
-              <li>We offer a 7-day satisfaction guarantee for refund requests</li>
-            </ul>
-
-            <h2 className="text-2xl font-semibold text-gray-900 mt-8 mb-4">5. Refund Policy</h2>
-            <p className="mb-4">We offer a 7-day money-back guarantee:</p>
-            <ul className="list-disc pl-6 mb-4">
-              <li>Refund requests must be made within 7 days of purchase</li>
-              <li>Contact support@landlordpdfpro.net for refund requests</li>
-              <li>Refunds will be processed within 5-10 business days</li>
-              <li>Account access will be revoked upon refund processing</li>
+              <li>All sales are final - no refunds will be provided</li>
+              <li>By purchasing, you acknowledge and agree to this no-refund policy</li>
             </ul>
 
             <h2 className="text-2xl font-semibold text-gray-900 mt-8 mb-4">6. User Content and Data</h2>
