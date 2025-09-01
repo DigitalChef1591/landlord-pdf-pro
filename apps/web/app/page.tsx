@@ -1,3 +1,4 @@
+// Force redeploy to fix custom domain caching issue - 2025-09-01
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
