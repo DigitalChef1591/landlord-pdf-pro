@@ -444,9 +444,7 @@ export default function Home(): React.JSX.Element {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center mr-3">
-                  <FileText className="h-4 w-4 text-white" />
-                </div>
+                <Logo size="sm" className="mr-3" />
                 <div className="flex flex-col">
                   <span className="text-lg font-semibold text-white">Landlord</span>
                   <span className="text-sm font-semibold text-blue-400">PDF Pro</span>
