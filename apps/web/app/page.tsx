@@ -4,6 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, FileText, Camera, Users, Download, Star, ArrowRight, Shield, Zap } from "lucide-react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Landlord PDF Pro - Professional Property Inspection Reports",
+  description: "Create professional move-in/out inspection reports with photos, signatures, and PDF exports. Trusted by thousands of landlords and property managers.",
+};
 
 export default function Home(): React.JSX.Element {
   return (
