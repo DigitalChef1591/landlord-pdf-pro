@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Plus, Camera, FileText, Download, AlertTriangle, Crown } from 'lucide-react';
-import { InContentBanner, FooterBanner } from '@/components/ui/ad-banner';
+import { ArrowLeft, Plus, Camera, FileText, Download, Settings, LogOut, User } from 'lucide-react';
+import { createSupabaseBrowserClient } from '@/lib/supabase';
 
 // Temporary inline types and data until we fix the package imports
 const DEFAULT_ROOM_TEMPLATES = [
@@ -45,8 +46,11 @@ type Inspection = {
 };
 
 export default function AppPage(): React.JSX.Element {
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [isPaid, setIsPaid] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [step, setStep] = useState<'property' | 'inspection' | 'rooms' | 'export'>('property');
-  const [isPaid, setIsPaid] = useState(false); // TODO: Check actual payment status from Supabase
   const [property, setProperty] = useState<Partial<Property>>({
     name: '',
     address: ''
@@ -58,12 +62,38 @@ export default function AppPage(): React.JSX.Element {
     payload: { rooms: [] }
   });
 
-  // TODO: Check user's payment status from Supabase
   useEffect(() => {
-    // This would check the user's entitlements from Supabase
-    // For now, we'll assume free tier
-    setIsPaid(false);
-  }, []);
+    const checkAuth = async () => {
+      const supabase = createSupabaseBrowserClient();
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        router.push('/auth/login');
+        return;
+      }
+
+      setUser(session.user);
+
+      // Check if user has paid
+      const { data: entitlement } = await supabase
+        .from('entitlements')
+        .select('paid')
+        .eq('user_id', session.user.id)
+        .single();
+
+      setIsPaid(entitlement?.paid || false);
+      setLoading(false);
+    };
+
+    checkAuth();
+  }, [router]);
+
+  const handleSignOut = async () => {
+    const supabase = createSupabaseBrowserClient();
+    await supabase.auth.signOut();
+    router.push('/');
+  };
 
   const handlePropertySubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -154,6 +184,54 @@ export default function AppPage(): React.JSX.Element {
     setStep('export');
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isPaid) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Card className="max-w-md mx-auto">
+          <CardHeader className="text-center">
+            <CardTitle className="flex items-center justify-center">
+              <FileText className="h-6 w-6 text-blue-600 mr-2" />
+              Upgrade Required
+            </CardTitle>
+            <CardDescription>
+              You need to upgrade to Pro to access the full app
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="text-center">
+              <p className="text-sm text-gray-600 mb-4">
+                Welcome {user?.email}! To access unlimited inspections and professional PDFs, please upgrade to Pro.
+              </p>
+              <div className="space-y-3">
+                <Button asChild className="w-full">
+                  <Link href="/purchase">Upgrade to Pro - $29</Link>
+                </Button>
+                <Button variant="outline" asChild className="w-full">
+                  <Link href="/demo">Try Free Demo</Link>
+                </Button>
+                <Button variant="ghost" onClick={handleSignOut} className="w-full">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -168,41 +246,28 @@ export default function AppPage(): React.JSX.Element {
               <div className="flex items-center">
                 <FileText className="h-6 w-6 text-blue-600 mr-2" />
                 <h1 className="text-xl font-semibold text-gray-900">Landlord PDF Pro</h1>
-                {isPaid ? (
-                  <Badge className="ml-2 bg-blue-600">
-                    <Crown className="h-3 w-3 mr-1" />
-                    Pro
-                  </Badge>
-                ) : (
-                  <Badge variant="secondary" className="ml-2">Free</Badge>
-                )}
+                <Badge variant="default" className="ml-2 bg-green-600">Pro</Badge>
               </div>
             </div>
-            <div className="flex items-center space-x-2">
-              {!isPaid && (
-                <>
-                  <AlertTriangle className="h-5 w-5 text-orange-500" />
-                  <span className="text-sm text-orange-600">Free Tier - Limited Features</span>
-                </>
-              )}
-              {!isPaid && (
-                <Button asChild size="sm">
-                  <Link href="/purchase">Upgrade to Pro - $29</Link>
-                </Button>
-              )}
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center text-sm text-gray-600">
+                <User className="h-4 w-4 mr-1" />
+                {user?.email}
+              </div>
+              <Button variant="outline" size="sm">
+                <Settings className="h-4 w-4 mr-2" />
+                Settings
+              </Button>
+              <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
+              </Button>
             </div>
           </div>
         </div>
       </header>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Ad Banner - Only show for free tier */}
-        {!isPaid && (
-          <div className="mb-6">
-            <InContentBanner />
-          </div>
-        )}
-
         {/* Progress Steps */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -414,7 +479,7 @@ export default function AppPage(): React.JSX.Element {
                           <Button variant="outline" size="sm" className="flex items-center">
                             <Camera className="h-4 w-4 mr-1" />
                             Add Photo
-                            {!isPaid && <Badge variant="secondary" className="ml-1">Free: 5 max</Badge>}
+                            <Badge variant="secondary" className="ml-1">Up to 100</Badge>
                           </Button>
                         </div>
                       </div>
@@ -430,7 +495,7 @@ export default function AppPage(): React.JSX.Element {
                   Back
                 </Button>
                 <Button onClick={handleExport} className="flex-1">
-                  Generate Report
+                  Generate Professional Report
                 </Button>
               </div>
             )}
@@ -443,29 +508,27 @@ export default function AppPage(): React.JSX.Element {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Download className="h-6 w-6 mr-2" />
-                Export Report
+                Export Professional Report
               </CardTitle>
-              <CardDescription>Your inspection report is ready</CardDescription>
+              <CardDescription>Your professional inspection report is ready</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {!isPaid && (
-                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-                  <div className="flex items-center">
-                    <AlertTriangle className="h-5 w-5 text-orange-500 mr-2" />
-                    <div>
-                      <h4 className="font-medium text-orange-800">Free Tier Limitations</h4>
-                      <p className="text-sm text-orange-700 mt-1">
-                        The exported PDF will include a watermark and be limited to 5 photos per inspection.
-                      </p>
-                    </div>
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                  <div>
+                    <h4 className="font-medium text-green-800">Professional Version</h4>
+                    <p className="text-sm text-green-700 mt-1">
+                      No watermarks, unlimited photos, professional formatting, and full export capabilities.
+                    </p>
                   </div>
                 </div>
-              )}
+              </div>
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 border rounded-lg">
                   <div>
-                    <h4 className="font-medium">Inspection Report</h4>
+                    <h4 className="font-medium">Professional Inspection Report</h4>
                     <p className="text-sm text-gray-600">
                       {property.name} - {inspection.type === 'move_in' ? 'Move-In' : 'Move-Out'} Inspection
                     </p>
@@ -476,29 +539,20 @@ export default function AppPage(): React.JSX.Element {
                   <Button className="flex items-center">
                     <Download className="h-4 w-4 mr-2" />
                     Download PDF
-                    {!isPaid && <Badge variant="secondary" className="ml-2">WATERMARKED</Badge>}
                   </Button>
                 </div>
               </div>
 
-              {/* Ad Banner - Only show for free tier */}
-              {!isPaid && (
-                <div className="my-6">
-                  <InContentBanner />
-                </div>
-              )}
-
-              {!isPaid && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <h4 className="font-medium text-blue-800 mb-2">Upgrade to Pro</h4>
-                  <p className="text-sm text-blue-700 mb-3">
-                    Get unlimited inspections, up to 100 photos per inspection, and professional PDFs without watermarks.
-                  </p>
-                  <Button asChild>
-                    <Link href="/purchase">Upgrade to Pro - $29</Link>
-                  </Button>
-                </div>
-              )}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h4 className="font-medium text-blue-800 mb-2">✨ Pro Features Active</h4>
+                <ul className="text-sm text-blue-700 space-y-1">
+                  <li>• No watermarks on exported PDFs</li>
+                  <li>• Up to 100 photos per inspection</li>
+                  <li>• Unlimited inspections and exports</li>
+                  <li>• Professional formatting and branding</li>
+                  <li>• Secure cloud storage and sharing</li>
+                </ul>
+              </div>
 
               <div className="flex space-x-3">
                 <Button variant="outline" onClick={() => setStep('rooms')} className="flex-1">
@@ -514,13 +568,6 @@ export default function AppPage(): React.JSX.Element {
               </div>
             </CardContent>
           </Card>
-        )}
-
-        {/* Footer Ad Banner - Only show for free tier */}
-        {!isPaid && (
-          <div className="mt-8">
-            <FooterBanner />
-          </div>
         )}
       </div>
     </div>
