@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle, FileText, Camera, Users, Download, Star, ArrowRight, Shield, Zap } from "lucide-react";
 import { Metadata } from "next";
 import { InContentBanner, FooterBanner } from "@/components/ui/ad-banner";
+import { LogoWithText, Logo } from "@/components/ui/logo";
 
 export const metadata: Metadata = {
   title: "Landlord PDF Pro - Professional Property Inspection Reports",
@@ -20,14 +21,7 @@ export default function Home(): React.JSX.Element {
       <header className="bg-white shadow-lg border-b border-gray-100 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-xl mr-4">
-                <FileText className="h-8 w-8 text-white" />
-              </div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                Landlord PDF Pro
-              </h1>
-            </div>
+            <LogoWithText size="md" />
             <div className="flex items-center space-x-6">
               <Link href="/demo" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
                 Try Free Demo
@@ -450,8 +444,11 @@ export default function Home(): React.JSX.Element {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center mb-4">
-                <FileText className="h-6 w-6 text-blue-400 mr-2" />
-                <span className="text-lg font-semibold">Landlord PDF Pro</span>
+                <Logo size="sm" className="mr-3" />
+                <div className="flex flex-col">
+                  <span className="text-lg font-semibold text-white">Landlord</span>
+                  <span className="text-sm font-semibold text-blue-400">PDF Pro</span>
+                </div>
               </div>
               <p className="text-gray-400">
                 Professional property inspection reports made simple.
