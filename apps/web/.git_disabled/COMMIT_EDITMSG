@@ -1,1 +1,0 @@
-Fix Stripe checkout URL - use official session.url instead of manual construction
