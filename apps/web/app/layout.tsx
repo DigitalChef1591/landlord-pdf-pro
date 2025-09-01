@@ -13,14 +13,26 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Landlord PDF Pro - Professional Property Inspection Reports",
+  title: {
+    default: "Landlord PDF Pro - Professional Property Inspection Reports",
+    template: "%s | Landlord PDF Pro"
+  },
   description: "Create professional move-in/out inspection reports with photos, signatures, and PDF exports. Trusted by thousands of landlords and property managers.",
   keywords: "landlord, property inspection, move-in report, move-out report, PDF, rental property, property management",
   authors: [{ name: "Landlord PDF Pro" }],
+  icons: {
+    icon: '/favicon.ico',
+  },
   openGraph: {
     title: "Landlord PDF Pro - Professional Property Inspection Reports",
     description: "Create professional move-in/out inspection reports with photos, signatures, and PDF exports.",
     type: "website",
+    siteName: "Landlord PDF Pro",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Landlord PDF Pro - Professional Property Inspection Reports",
+    description: "Create professional move-in/out inspection reports with photos, signatures, and PDF exports.",
   },
 };
 
