@@ -22,7 +22,7 @@ export function HeaderBanner(): React.JSX.Element {
       <ins
         className="adsbygoogle"
         style={{ display: 'block' }}
-        data-ad-client="ca-pub-3590752439210804"
+        data-ad-client="ca-pub-3590755249240804"
         data-ad-slot="1234567890"
         data-ad-format="auto"
         data-full-width-responsive="true"
@@ -45,7 +45,7 @@ export function SidebarBanner(): React.JSX.Element {
       <ins
         className="adsbygoogle"
         style={{ display: 'block' }}
-        data-ad-client="ca-pub-3590752439210804"
+        data-ad-client="ca-pub-3590755249240804"
         data-ad-slot="2345678901"
         data-ad-format="rectangle"
       />
@@ -69,7 +69,7 @@ export function InContentBanner(): React.JSX.Element {
         <ins
           className="adsbygoogle"
           style={{ display: 'block' }}
-          data-ad-client="ca-pub-3590752439210804"
+        data-ad-client="ca-pub-3590755249240804"
           data-ad-slot="3456789012"
           data-ad-format="auto"
           data-full-width-responsive="true"
@@ -95,7 +95,7 @@ export function FooterBanner(): React.JSX.Element {
         <ins
           className="adsbygoogle"
           style={{ display: 'block' }}
-          data-ad-client="ca-pub-3590752439210804"
+        data-ad-client="ca-pub-3590755249240804"
           data-ad-slot="4567890123"
           data-ad-format="auto"
           data-full-width-responsive="true"

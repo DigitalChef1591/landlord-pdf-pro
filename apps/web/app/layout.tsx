@@ -45,7 +45,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* Google AdSense Verification */}
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3590752439210804"
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3590755249240804"
              crossOrigin="anonymous"></script>
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
