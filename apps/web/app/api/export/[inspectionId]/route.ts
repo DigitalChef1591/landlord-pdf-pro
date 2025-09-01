@@ -3,10 +3,10 @@ import { createSupabaseServiceClient } from '@/lib/supabase'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { inspectionId: string } }
+  { params }: { params: Promise<{ inspectionId: string }> }
 ) {
   try {
-    const { inspectionId } = params;
+    const { inspectionId } = await params;
     const supabase = createSupabaseServiceClient();
 
     // Get inspection with property details
