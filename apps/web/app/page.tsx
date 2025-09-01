@@ -256,7 +256,7 @@ export default function Home(): React.JSX.Element {
             <span className="text-blue-600">Everything Included</span>
           </h2>
           <p className="text-xl text-gray-600 mb-16 max-w-3xl mx-auto">
-            No hidden fees, no monthly subscriptions, no surprises. Pay once and own it forever.
+            No hidden fees, no monthly subscriptions, no surprises. Pay once and own it forever. All sales are final.
           </p>
 
           <div className="max-w-md mx-auto">
