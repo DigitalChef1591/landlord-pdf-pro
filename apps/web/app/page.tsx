@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, FileText, Camera, Users, Download, Star, ArrowRight, Shield, Zap } from "lucide-react";
 import { Metadata } from "next";
+import { InContentBanner, FooterBanner } from "@/components/ui/ad-banner";
 
 export const metadata: Metadata = {
   title: "Landlord PDF Pro - Professional Property Inspection Reports",
@@ -85,6 +86,9 @@ export default function Home(): React.JSX.Element {
           </div>
         </div>
       </section>
+
+      {/* Ad Banner */}
+      <InContentBanner />
 
       {/* Features Section */}
       <section className="py-24 bg-gray-50">
@@ -436,6 +440,9 @@ export default function Home(): React.JSX.Element {
           </div>
         </div>
       </section>
+
+      {/* Footer Ad Banner */}
+      <FooterBanner />
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
