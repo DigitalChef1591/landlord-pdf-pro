@@ -22,17 +22,26 @@ export default function PurchasePage(): React.JSX.Element {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID,
           successUrl: `${window.location.origin}/thank-you`,
           cancelUrl: `${window.location.origin}/purchase`,
         }),
       });
 
-      const { sessionId } = await response.json();
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
       
       // Redirect to Stripe Checkout using the session URL
-      if (sessionId) {
-        window.location.href = `https://checkout.stripe.com/pay/${sessionId}`;
+      if (data.sessionId) {
+        window.location.href = `https://checkout.stripe.com/pay/${data.sessionId}`;
+      } else {
+        throw new Error('No session ID received from server');
       }
     } catch (error) {
       console.error('Error creating checkout session:', error);

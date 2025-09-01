@@ -11,7 +11,7 @@ if (process.env.STRIPE_SECRET_KEY) {
 }
 
 export const STRIPE_CONFIG = {
-  priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID || '',
+  priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID || 'price_demo_fallback',
   publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
   webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
 }

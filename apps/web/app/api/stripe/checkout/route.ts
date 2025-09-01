@@ -5,6 +5,14 @@ export async function POST(request: NextRequest) {
   try {
     const { priceId, successUrl, cancelUrl } = await request.json()
 
+    // Check if Stripe is properly configured
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json(
+        { error: 'Payment system is currently being set up. Please check back soon!' },
+        { status: 503 }
+      )
+    }
+
     // Get Stripe instance (lazy initialization)
     const stripe = getStripe()
 
@@ -29,8 +37,8 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error creating checkout session:', error)
     return NextResponse.json(
-      { error: 'Failed to create checkout session' },
-      { status: 500 }
+      { error: 'Payment system is currently being set up. Please check back soon!' },
+      { status: 503 }
     )
   }
 }
