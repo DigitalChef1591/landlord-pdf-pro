@@ -54,7 +54,7 @@ export default function NewInspectionPage(): React.JSX.Element {
     propertyName: '',
     propertyAddress: '',
     inspectionType: 'move_in',
-    inspectionDate: new Date().toISOString().split('T')[0],
+    inspectionDate: new Date().toISOString().split('T')[0] || '',
     rooms: {}
   });
   const [selectedRoom, setSelectedRoom] = useState<string>('');
