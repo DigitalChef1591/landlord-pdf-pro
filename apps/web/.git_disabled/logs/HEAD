@@ -1,0 +1,6 @@
+0000000000000000000000000000000000000000 18e505bf47062a2ad884e06d364e1961ff88d952 Austin Pincus <austinpincus@gmail.com> 1756655189 -0700	commit (initial): Initial commit
+18e505bf47062a2ad884e06d364e1961ff88d952 d7168f55ad44d4d53f2441ff8095b1737e48444d Austin Pincus <austinpincus@gmail.com> 1756658440 -0700	commit: Initial commit - Landlord PDF Pro
+d7168f55ad44d4d53f2441ff8095b1737e48444d 0000000000000000000000000000000000000000 Austin Pincus <austinpincus@gmail.com> 1756658440 -0700	Branch: renamed refs/heads/master to refs/heads/main
+0000000000000000000000000000000000000000 d7168f55ad44d4d53f2441ff8095b1737e48444d Austin Pincus <austinpincus@gmail.com> 1756658440 -0700	Branch: renamed refs/heads/master to refs/heads/main
+d7168f55ad44d4d53f2441ff8095b1737e48444d 8bc52fb7131de3c4fc941d437dc018fbb94020ca Austin Pincus <austinpincus@gmail.com> 1756751325 -0700	commit: Force redeploy to fix custom domain caching - modern design not showing on landlordpdfpro.net
+8bc52fb7131de3c4fc941d437dc018fbb94020ca ad09c09855d26c3ffa9e5b791610bc76eed6737a Austin Pincus <austinpincus@gmail.com> 1756752896 -0700	commit: Fix Stripe checkout URL - use official session.url instead of manual construction
