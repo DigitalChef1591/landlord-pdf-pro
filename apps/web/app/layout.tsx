@@ -46,14 +46,17 @@ export default function RootLayout({
 }>): React.JSX.Element {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {/* Google AdSense Verification Code */}
-        <Script
+      <head>
+        {/* Google AdSense Meta Tag */}
+        <meta name="google-adsense-account" content="ca-pub-3590755249240804" />
+        {/* Google AdSense Script */}
+        <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3590755249240804"
           crossOrigin="anonymous"
-          strategy="beforeInteractive"
-        />
+        ></script>
+      </head>
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
       </body>
     </html>
